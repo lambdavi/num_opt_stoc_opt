@@ -3,7 +3,7 @@ Repo referring to the course: Numerical Optimization for large scale Problems an
 
 # Folder organization:
 .<br>
-├── direct_methods        # Contains methods not object of the course
-├── iterative_methods     # Contains methods we explored in the course
-├── LICENSE
-└── README.md
+├── direct_methods        # Contains methods not object of the course<br>
+├── iterative_methods     # Contains methods we explored in the course<br>
+├── LICENSE<br>
+└── README.md<br>
