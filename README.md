@@ -1,7 +1,7 @@
-# num_opt_stoc_opt
+# Numerical and Stochastic Optimization
 Repo referring to the course: Numerical Optimization for large scale Problems and Stochastic Optimization
 
-### A typical top-level directory layout
+### Layout of the repo
 
     .
     ├── direct_methods          # Contains direct algorithms to solve linear systems such as Gaussian Elimination  
