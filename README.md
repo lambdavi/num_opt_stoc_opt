@@ -4,10 +4,7 @@ Repo referring to the course: Numerical Optimization for large scale Problems an
 ### A typical top-level directory layout
 
     .
-    ├── build                   # Compiled files (alternatively `dist`)
-    ├── docs                    # Documentation files (alternatively `doc`)
-    ├── src                     # Source files (alternatively `lib` or `app`)
-    ├── test                    # Automated tests (alternatively `spec` or `tests`)
-    ├── tools                   # Tools and utilities
+    ├── direct_methods          # Contains direct algorithms to solve linear systems such as Gaussian Elimination  
+    ├── iterative methods       # Contains iterative methods which willl be explained during the course
     ├── LICENSE
     └── README.md
