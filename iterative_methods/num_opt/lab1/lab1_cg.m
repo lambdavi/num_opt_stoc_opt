@@ -1,6 +1,6 @@
-n = 100;
-alpha = 4;
-tol = 1e-3;
+n = 1000;
+alpha = 2;
+tol = 1e-4;
 a = [-ones(n,1) alpha*ones(n,1) -ones(n,1)];
 A = spdiags(a,-1:1,n,n);
 b = A*ones(n,1);
@@ -25,7 +25,7 @@ for i = 1:10000
     alpha_k = (r_k'*d_k)/(d_k'*z_k);
     x_k = x_k + alpha_k*d_k;
     r_k1=r_k - alpha_k*z_k;
-    beta_k = -(r_k1'*r_k1)/(r_k'*r_k);
+    beta_k = (r_k1'*r_k1)/(r_k'*r_k);
     d_k=r_k1+beta_k*d_k;
     r_k=r_k1;
 end
