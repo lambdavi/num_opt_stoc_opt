@@ -99,6 +99,7 @@ else
             % DEFINE a f. handle for the product of Hessf * p USING THE
             % GRADIENT
             Hessf_pk = @(x, p) (gradf(x + h * p) - gradf(x)) / h;
+
         otherwise
             % WE USE THE INPUT FUNCTION HANDLE Hessf
             %
@@ -116,12 +117,16 @@ xseq = zeros(length(x0), kmax);
 btseq = zeros(1, kmax);
 
 xk = x0;
-fk = f(xk);
+fk = zeros(1, kmax+1);
+fk(1) = f(xk);
+
 k = 0;
 gradfk = gradf(xk);
-gradfk_norm = norm(gradfk);
+gradfk_norm = zeros(kmax+1, 1); 
+gradfk_norm(1) = norm(gradfk);
 
-while k < kmax && gradfk_norm >= tolgrad
+
+while k < kmax && gradfk_norm(k+1) >= tolgrad
     % Compute the descent direction as solution of
     % Hessf(xk) p = - graf(xk)
     tol_pcg = forcing_terms(gradfk);
@@ -136,8 +141,7 @@ while k < kmax && gradfk_norm >= tolgrad
             % that exploits the f. handle Hessf_pk to define the product
             % between Hessfk and p (i.e., xk fixed, p variable):
             Hessfk_pk = @(p) Hessf_pk(xk, p);
-            
-            pk = pcg(Hessfk_pk, -gradfk, tol_pcg, pcg_maxit);
+            [pk,FLAG,RELRES,ITER] = pcg(Hessfk_pk, -gradfk, tol_pcg, pcg_maxit);
             
             % ALTERNATIVE (ONE LINE OF CODE):
             % pk = pcg(@(p)Hessf_pk(xk, p), -gradfk, tolgrad, pcg_maxit);
@@ -150,9 +154,8 @@ while k < kmax && gradfk_norm >= tolgrad
             % OBERVATION: simple usage of pcg with matrix of the linear
             % system as first input of the pcg function.
             H=Hessf(xk);
-            M = diag(diag(H)); % create a diagonal preconditioner
-
-            pk = pcg(H, -gradfk, tol_pcg, pcg_maxit,M, M');
+            L = ichol(H,struct('diagcomp',0.01)); % create a diagonal preconditioner
+            [pk,FLAG,RELRES,ITER] = pcg(H, -gradfk, tol_pcg, pcg_maxit,L,L');
     end
     
     
@@ -167,7 +170,7 @@ while k < kmax && gradfk_norm >= tolgrad
     bt = 0;
     % Backtracking strategy: 
     % 2nd condition is the Armijo condition not satisfied
-    while bt < btmax && fnew > farmijo(fk, alpha, xk, pk)
+    while bt < btmax && fnew > farmijo(fk(k+1), alpha, xk, pk)
         % Reduce the value of alpha
         alpha = rho * alpha;
         % Update xnew and fnew w.r.t. the reduced alpha
@@ -178,15 +181,14 @@ while k < kmax && gradfk_norm >= tolgrad
         bt = bt + 1;
         
     end
-    
+    k = k + 1;
+
     % Update xk, fk, gradfk_norm
     xk = xnew;
-    fk = fnew;
+    fk(k+1)=fnew;
     gradfk = gradf(xk);
-    gradfk_norm = norm(gradfk);
-    
+    gradfk_norm(k+1) = norm(gradfk);    
     % Increase the step by one
-    k = k + 1;
     
     % Store current xk in xseq
     xseq(:, k) = xk;
@@ -197,5 +199,9 @@ end
 % "Cut" xseq and btseq to the correct size
 xseq = xseq(:, 1:k);
 btseq = btseq(1:k);
+gradfk_norm = gradfk_norm(1:k+1);
+fk = fk(1:k+1);
+
+
 
 end

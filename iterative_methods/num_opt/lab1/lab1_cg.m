@@ -28,6 +28,7 @@ for i = 1:10000
     beta_k = (r_k1'*r_k1)/(r_k'*r_k);
     d_k=r_k1+beta_k*d_k;
     r_k=r_k1;
+    fk = f(x_k);
 end
 disp(i)
 
